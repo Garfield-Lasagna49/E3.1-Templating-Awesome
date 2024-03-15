@@ -4,16 +4,13 @@ import { renderTemplate } from "./view";
 
 export const getHome = async (req: IncomingMessage, res: ServerResponse) => {
     res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Content-Type", "text/html");
     res.end(
-        JSON.stringify(
-            {
-                message: "Hello from the Pokemon Server!",
-            },
-            null,
-            2,
-        ),
-    );
+        await renderTemplate("src/page.hbs", {
+          heading: "Beavers!",
+          image: "images/beaver.png",
+        })
+      );
 };
 
 export const getAllPokemon = async (
@@ -24,24 +21,28 @@ export const getAllPokemon = async (
     const queryParams = url.searchParams;
     const typeFilter = queryParams.get("type");
     const sortBy = queryParams.get("sortBy");
-    let pokemon: Pokemon[] = [];
+    let beavers: Pokemon[] = [];
 
     // Apply basic filtering if we have a `typeFilter`:
     if (typeFilter) {
-        pokemon = database.filter((pokemon) => pokemon.type === typeFilter);
+        beavers = database.filter((beaver) => beaver.type === typeFilter);
     } else {
-        pokemon = database;
+        beavers = database;
     }
 
     if (sortBy === "name") {
-        pokemon = [...pokemon].sort((a, b) => a.name.localeCompare(b.name));
+        beavers = [...beavers].sort((a, b) => a.name.localeCompare(b.name));
     }
 
     res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Content-Type", "text/html");
     res.end(
-        JSON.stringify({ message: "All Pokemon", payload: pokemon }, null, 2),
-    );
+        await renderTemplate("src/page.hbs", {
+          heading: "All Beavers!",
+          image: "images/beaverMany.jpg",
+          beavers: beavers
+        })
+      );
 };
 
 export const getOnePokemon = async (
@@ -49,25 +50,22 @@ export const getOnePokemon = async (
     res: ServerResponse,
 ) => {
     const id = Number(req.url?.split("/")[2]);
-    const foundPokemon = database.find((pokemon) => pokemon.id === id);
+    const beaver = database.find((beaver) => beaver.id === id);
 
-    if (!foundPokemon) {
+    if (!beaver) {
         res.statusCode = 404;
         return res.end(
-            JSON.stringify({ message: "Pokemon not found" }, null, 2),
+            JSON.stringify({ message: "Beaver not found" }, null, 2),
         );
     }
 
     res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Content-Type", "text/html");
     res.end(
-        JSON.stringify(
-            {
-                message: "Pokemon found",
-                payload: foundPokemon,
-            },
-            null,
-            2,
-        ),
-    );
+        await renderTemplate("src/page.hbs", {
+          heading: beaver.name + "!",
+          image: beaver.imageSRC,
+          beaver: beaver
+        })
+      );
 };

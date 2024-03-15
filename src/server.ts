@@ -1,9 +1,13 @@
 import http, { IncomingMessage, ServerResponse } from "http";
 import { promises as fs } from "fs";
 import { routes } from "./router";
+import { registerPartialTemplate } from "./view";
 
 const hostname = "127.0.0.1";
 const port = 3000;
+
+registerPartialTemplate("Header", "src/views/partials/Header.hbs");
+registerPartialTemplate("Footer", "src/views/partials/Footer.hbs");
 
 /**
  * A static file is a file that the client requests for

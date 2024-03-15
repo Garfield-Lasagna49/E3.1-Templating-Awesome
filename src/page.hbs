@@ -1,0 +1,14 @@
+{{> Header }}
+
+    <h1>
+        {{heading}}
+    </h1>
+    <ul>
+        {{#each beavers}}
+            <li>{{name}} is a {{type}} Beaver.</li>
+        {{/each}}
+    </ul>
+    <img src="http://localhost:3000/{{image}}">
+
+
+{{> Footer }}
